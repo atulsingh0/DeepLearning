@@ -96,4 +96,18 @@ def split_vals(X,y,p):
     y_train, y_test = y[:n].copy(), y[n:].copy()
     print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
     return X_train, X_test, y_train, y_test
+	
+
+def print_score(clf, X_train, y_train, X_test, y_test):
+	"""
+	clf : Inp - Model
+	X_test, X_test, y_train, y_test : Inp - Data Variable
+	res : Out - scores
+	"""
+	res = [rmse(clf.predict(X_train), y_train), rmse(clf.predict(X_test), y_test), clf.score(X_train, y_train), clf.score(X_test, y_test)]
+	if hasattr(clf, 'oob_score_'):
+		res = res.append(clf.oob_score_)
+		
+	return res
+		
 
