@@ -109,5 +109,16 @@ def print_score(clf, X_train, y_train, X_test, y_test):
 		res = res.append(clf.oob_score_)
 		
 	return res
+	
+
+def reverse_dict(dic):
+	'''
+	return reverse dictionary
+	'''
+	rev = dict([(value, key) for (key,value) in dic.items()])
+	return rev
+	
+	
+
 		
 
