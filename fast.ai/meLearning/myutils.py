@@ -4,9 +4,12 @@ import pandas as pd
 import os
 import glob
 import shutil
+import stat
+import matplotlib.pyplot as plt
 
 
-def get_sample(df, n):
+
+def df_sample(df, n):
     '''
         df: Inp - Pass the dataframe df
         n : Inp - Fraction of data
@@ -31,7 +34,7 @@ def df_null_per(df):
     return df.isnull().sum().sort_index()/len(df)
 
 
-def rem_col_null(df, p):
+def df_remColNull(df, p):
     '''
     Remove the Columns which is having more than
     p% NUll in it
@@ -43,7 +46,7 @@ def rem_col_null(df, p):
     return df.loc[:, df.isnull().sum()/len(df) < p ]
 
 
-def rem_row_null(df, p):
+def df_remRowNull(df, p):
     '''
     Remove the Row which is having more than
     p% NUll in it
@@ -52,17 +55,85 @@ def rem_row_null(df, p):
     p : Inp - Percentage, 0.1 = 10%
     '''
     return df.loc[(df.isnull().transpose().sum()/len(df) < p ).index]
+
 	
-	
-def dataCategorizer(lst, path):
+def _remove_readonly(fn, path_, excinfo):
+    # Handle read-only files and directories
+    if fn is os.rmdir:
+        os.chmod(path_, stat.S_IWRITE)
+        os.rmdir(path_)
+    elif fn is os.remove:
+        os.lchmod(path_, stat.S_IWRITE)
+        os.remove(path_)
+
+
+def force_remove_file_or_symlink(path_):
+    try:
+        os.remove(path_)
+    except OSError:
+        os.lchmod(path_, stat.S_IWRITE)
+        os.remove(path_)
+
+
+# Code from shutil.rmtree()
+def is_regular_dir(path_):
+    try:
+        mode = os.lstat(path_).st_mode
+    except os.error:
+        mode = 0
+    return stat.S_ISDIR(mode)
+
+
+def clear_dir(path_):
+    if is_regular_dir(path_):
+        # Given path is a directory, clear its content
+        for name in os.listdir(path_):
+            fullpath = os.path.join(path_, name)
+            if is_regular_dir(fullpath):
+                shutil.rmtree(fullpath, onerror=_remove_readonly)
+            else:
+                force_remove_file_or_symlink(fullpath)
+    else:
+        # Given path is a file or a symlink.
+        # Raise an exception here to avoid accidentally clearing the content
+        # of a symbolic linked directory.
+        raise OSError("Cannot call clear_dir() on a symbolic link")
+
+        
+def dataCategorizer(catg, path):
+    """
+    Categorizing the data files in different folders
+    based on the categories list
+    
+    path is contains 2 kind of files- dogs n cats
+    catg = ['dog','cat']
+    path = 'path'
+    
+    create 2 folders, dog and cat and move all the respective file in it
+    """
     os.chdir(path)
-    [os.makedirs(dir) for dir in lst]
-    for name in lst:
+    [os.makedirs(dir) for dir in catg]
+    for name in catg:
         for f in glob.glob(name+"*"):
               shutil.move(f, name)
 
-
-def to_save(df, path):
+              
+def data_sampler(n, src, tgt):
+    """
+    Random Sample of files....
+    n = No of files needed as sample
+    src = Source directory
+    tgt = Target directory
+    """
+    #clear_dir(tgt)
+    shutil.rmtree(tgt) # removing the whole tree
+    os.mkdir(tgt)  # recreating the folder again
+    files=np.random.choice(os.listdir(src), n)
+    for file in files:
+        shutil.move(os.path.join(src,file), tgt)
+        
+              
+def df_save(df, path):
     """To Save any dataset
     df   : Inp - Any data type variable
     path : Inp - Full Path with filename i.e. - /tmp/data.raw
@@ -110,7 +181,7 @@ def print_score(clf, X_train, y_train, X_test, y_test):
 		
 	return res
 	
-
+	
 def reverse_dict(dic):
 	'''
 	return reverse dictionary
@@ -118,7 +189,80 @@ def reverse_dict(dic):
 	rev = dict([(value, key) for (key,value) in dic.items()])
 	return rev
 	
-	
+'''	
+def plotting_keras_acc_ax(history):
+    history = history.history
+    train_acc = history['acc']
+    val_acc = history['val_acc']
+    train_loss = history['loss']
+    val_loss = history['val_loss']
+    
+    epochs = np.arange(1, len(train_acc)+1)
+    hr = np.arange(-1, len(train_acc)+2)
+    train_loss_avg = np.repeat(np.mean(train_loss), len(hr))
+    val_loss_avg = np.repeat(np.mean(val_loss), len(hr))
+    train_acc_avg = np.repeat(np.mean(train_acc), len(hr))
+    val_acc_avg = np.repeat(np.mean(val_acc), len(hr))
+    
+    fig = plt.figure(figsize=(12,9))
+    f, ax = plt.subplots(1,2)
+    
+    ax[0].plot(epochs, train_loss, '.-', label='Train Loss')
+    ax[0].plot(epochs, val_loss, '-', label='Validation Loss')
+    ax[0].plot(hr, train_loss_avg, '--', label='Train Loss Mean')
+    ax[0].plot(hr, val_loss_avg, '--', label='Validation Loss Mean')
+    ax[0].set_xlabel("epochs")
+    ax[0].set_ylabel("Loss")
+    ax[0].grid()
+    ax[0].legend()
+    #plt.show()
+    
+    #plt.clf()
+    
+    ax[1].plot(epochs, train_acc, '.-', label='Train Accuracy')
+    ax[1].plot(epochs, val_acc, '-', label='Validation Accuracy')
+    ax[1].plot(hr, train_acc_avg, '--', label='Train Loss Mean')
+    ax[1].plot(hr, val_acc_avg, '--', label='Validation Loss Mean')
+    ax[1].set_xlabel("epochs")
+    ax[1].set_ylabel("Accuracy")
+    ax[1].grid()
+    ax[1].legend()
+    plt.show()
+'''	
 
-		
+def plotting_keras_acc(history):
+    history = history.history
+    train_acc = history['acc']
+    val_acc = history['val_acc']
+    train_loss = history['loss']
+    val_loss = history['val_loss']
+    
+    epochs = np.arange(1, len(train_acc)+1)
+    hr = np.arange(-1, len(train_acc)+2)
+    train_loss_avg = np.repeat(np.mean(train_loss), len(hr))
+    val_loss_avg = np.repeat(np.mean(val_loss), len(hr))
+    train_acc_avg = np.repeat(np.mean(train_acc), len(hr))
+    val_acc_avg = np.repeat(np.mean(val_acc), len(hr))
+    
+    plt.plot(epochs, train_acc, '.-', label='Train Accuracy')
+    plt.plot(epochs, val_acc, '-', label='Validation Accuracy')
+    plt.plot(hr, train_acc_avg, '.-', label='Train Accuracy Loss')
+    plt.plot(hr, val_acc_avg, '-', label='Validation Accuracy Loss')
+    plt.xlabel("epochs")
+    plt.ylabel("Accuracy")
+    plt.grid()
+    plt.legend()
+    plt.show()
+    
+    plt.clf()
+    
+    plt.plot(epochs, train_loss, '.-', label='Train Loss')
+    plt.plot(epochs, val_loss, '-', label='Validation Loss')
+    plt.plot(hr, train_loss_avg, '--', label='Train Loss Mean')
+    plt.plot(hr, val_loss_avg, '--', label='Validation Loss Mean')
 
+    plt.xlabel("epochs")
+    plt.ylabel("Loss")
+    plt.grid()
+    plt.legend()
+    plt.show()
