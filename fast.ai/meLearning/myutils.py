@@ -105,11 +105,13 @@ def dataCategorizer(catg, path):
     Categorizing the data files in different folders
     based on the categories list
     
-    path is contains 2 kind of files- dogs n cats
+    i.e.-
+    path is contains 2 kind of files - dogs n cats
     catg = ['dog','cat']
     path = 'path'
     
-    create 2 folders, dog and cat and move all the respective file in it
+    create 2 folders in $path - dog and cat 
+    and move all the respective file in it
     """
     os.chdir(path)
     [os.makedirs(dir) for dir in catg]

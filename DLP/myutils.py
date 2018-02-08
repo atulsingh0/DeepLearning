@@ -4,6 +4,8 @@ import pandas as pd
 import os
 import glob
 import shutil
+import matplotlib.pyplot as plt
+
 
 
 def get_sample(df, n):
@@ -54,14 +56,36 @@ def rem_row_null(df, p):
     return df.loc[(df.isnull().transpose().sum()/len(df) < p ).index]
 	
 	
-def dataCategorizer(lst, path):
+def dataCategorizer(catg, path):
+    """
+    Categorizing the data files in different folders
+    based on the categories list
+    
+    path is contains 2 kind of files- dogs n cats
+    catg = ['dog','cat']
+    path = 'path'
+    
+    create 2 folders, dog and cat and move all the respective file in it
+    """
     os.chdir(path)
-    [os.makedirs(dir) for dir in lst]
-    for name in lst:
+    [os.makedirs(dir) for dir in catg]
+    for name in catg:
         for f in glob.glob(name+"*"):
               shutil.move(f, name)
 
 
+def select_sample(n, src, tgt):
+    """
+    Random Sample of files....
+    n = No of files needed as sample
+    src = Source directory
+    tgt = Target directory
+    """
+    files=np.random.choice(os.listdir(src), n)
+    for file in files:
+        shutil.move(os.path.join(src,file), tgt)
+        
+              
 def to_save(df, path):
     """To Save any dataset
     df   : Inp - Any data type variable
@@ -118,4 +142,80 @@ def reverse_dict(dic):
 	rev = dict([(value, key) for (key,value) in dic.items()])
 	return rev
 	
-	
+'''	
+def plotting_keras_acc_ax(history):
+    history = history.history
+    train_acc = history['acc']
+    val_acc = history['val_acc']
+    train_loss = history['loss']
+    val_loss = history['val_loss']
+    
+    epochs = np.arange(1, len(train_acc)+1)
+    hr = np.arange(-1, len(train_acc)+2)
+    train_loss_avg = np.repeat(np.mean(train_loss), len(hr))
+    val_loss_avg = np.repeat(np.mean(val_loss), len(hr))
+    train_acc_avg = np.repeat(np.mean(train_acc), len(hr))
+    val_acc_avg = np.repeat(np.mean(val_acc), len(hr))
+    
+    fig = plt.figure(figsize=(12,9))
+    f, ax = plt.subplots(1,2)
+    
+    ax[0].plot(epochs, train_loss, '.-', label='Train Loss')
+    ax[0].plot(epochs, val_loss, '-', label='Validation Loss')
+    ax[0].plot(hr, train_loss_avg, '--', label='Train Loss Mean')
+    ax[0].plot(hr, val_loss_avg, '--', label='Validation Loss Mean')
+    ax[0].set_xlabel("epochs")
+    ax[0].set_ylabel("Loss")
+    ax[0].grid()
+    ax[0].legend()
+    #plt.show()
+    
+    #plt.clf()
+    
+    ax[1].plot(epochs, train_acc, '.-', label='Train Accuracy')
+    ax[1].plot(epochs, val_acc, '-', label='Validation Accuracy')
+    ax[1].plot(hr, train_acc_avg, '--', label='Train Loss Mean')
+    ax[1].plot(hr, val_acc_avg, '--', label='Validation Loss Mean')
+    ax[1].set_xlabel("epochs")
+    ax[1].set_ylabel("Accuracy")
+    ax[1].grid()
+    ax[1].legend()
+    plt.show()
+'''	
+
+def plotting_keras_acc(history):
+    history = history.history
+    train_acc = history['acc']
+    val_acc = history['val_acc']
+    train_loss = history['loss']
+    val_loss = history['val_loss']
+    
+    epochs = np.arange(1, len(train_acc)+1)
+    hr = np.arange(-1, len(train_acc)+2)
+    train_loss_avg = np.repeat(np.mean(train_loss), len(hr))
+    val_loss_avg = np.repeat(np.mean(val_loss), len(hr))
+    train_acc_avg = np.repeat(np.mean(train_acc), len(hr))
+    val_acc_avg = np.repeat(np.mean(val_acc), len(hr))
+    
+    plt.plot(epochs, train_acc, '.-', label='Train Accuracy')
+    plt.plot(epochs, val_acc, '-', label='Validation Accuracy')
+    plt.plot(hr, train_acc_avg, '.-', label='Train Accuracy Loss')
+    plt.plot(hr, val_acc_avg, '-', label='Validation Accuracy Loss')
+    plt.xlabel("epochs")
+    plt.ylabel("Accuracy")
+    plt.grid()
+    plt.legend()
+    plt.show()
+    
+    plt.clf()
+    
+    plt.plot(epochs, train_loss, '.-', label='Train Loss')
+    plt.plot(epochs, val_loss, '-', label='Validation Loss')
+    plt.plot(hr, train_loss_avg, '--', label='Train Loss Mean')
+    plt.plot(hr, val_loss_avg, '--', label='Validation Loss Mean')
+
+    plt.xlabel("epochs")
+    plt.ylabel("Loss")
+    plt.grid()
+    plt.legend()
+    plt.show()
