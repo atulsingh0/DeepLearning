@@ -4,11 +4,12 @@ import pandas as pd
 import os
 import glob
 import shutil
+import stat
 import matplotlib.pyplot as plt
 
 
 
-def get_sample(df, n):
+def df_sample(df, n):
     '''
         df: Inp - Pass the dataframe df
         n : Inp - Fraction of data
@@ -33,7 +34,7 @@ def df_null_per(df):
     return df.isnull().sum().sort_index()/len(df)
 
 
-def rem_col_null(df, p):
+def df_remColNull(df, p):
     '''
     Remove the Columns which is having more than
     p% NUll in it
@@ -45,7 +46,7 @@ def rem_col_null(df, p):
     return df.loc[:, df.isnull().sum()/len(df) < p ]
 
 
-def rem_row_null(df, p):
+def df_remRowNull(df, p):
     '''
     Remove the Row which is having more than
     p% NUll in it
@@ -54,18 +55,63 @@ def rem_row_null(df, p):
     p : Inp - Percentage, 0.1 = 10%
     '''
     return df.loc[(df.isnull().transpose().sum()/len(df) < p ).index]
+
 	
-	
+def _remove_readonly(fn, path_, excinfo):
+    # Handle read-only files and directories
+    if fn is os.rmdir:
+        os.chmod(path_, stat.S_IWRITE)
+        os.rmdir(path_)
+    elif fn is os.remove:
+        os.lchmod(path_, stat.S_IWRITE)
+        os.remove(path_)
+
+
+def force_remove_file_or_symlink(path_):
+    try:
+        os.remove(path_)
+    except OSError:
+        os.lchmod(path_, stat.S_IWRITE)
+        os.remove(path_)
+
+
+# Code from shutil.rmtree()
+def is_regular_dir(path_):
+    try:
+        mode = os.lstat(path_).st_mode
+    except os.error:
+        mode = 0
+    return stat.S_ISDIR(mode)
+
+
+def clear_dir(path_):
+    if is_regular_dir(path_):
+        # Given path is a directory, clear its content
+        for name in os.listdir(path_):
+            fullpath = os.path.join(path_, name)
+            if is_regular_dir(fullpath):
+                shutil.rmtree(fullpath, onerror=_remove_readonly)
+            else:
+                force_remove_file_or_symlink(fullpath)
+    else:
+        # Given path is a file or a symlink.
+        # Raise an exception here to avoid accidentally clearing the content
+        # of a symbolic linked directory.
+        raise OSError("Cannot call clear_dir() on a symbolic link")
+
+        
 def dataCategorizer(catg, path):
     """
     Categorizing the data files in different folders
     based on the categories list
     
-    path is contains 2 kind of files- dogs n cats
+    i.e.-
+    path is contains 2 kind of files - dogs n cats
     catg = ['dog','cat']
     path = 'path'
     
-    create 2 folders, dog and cat and move all the respective file in it
+    create 2 folders in $path - dog and cat 
+    and move all the respective file in it
     """
     os.chdir(path)
     [os.makedirs(dir) for dir in catg]
@@ -73,20 +119,23 @@ def dataCategorizer(catg, path):
         for f in glob.glob(name+"*"):
               shutil.move(f, name)
 
-
-def select_sample(n, src, tgt):
+              
+def data_sampler(n, src, tgt):
     """
     Random Sample of files....
     n = No of files needed as sample
     src = Source directory
     tgt = Target directory
     """
+    #clear_dir(tgt)
+    shutil.rmtree(tgt) # removing the whole tree
+    os.mkdir(tgt)  # recreating the folder again
     files=np.random.choice(os.listdir(src), n)
     for file in files:
         shutil.move(os.path.join(src,file), tgt)
         
               
-def to_save(df, path):
+def df_save(df, path):
     """To Save any dataset
     df   : Inp - Any data type variable
     path : Inp - Full Path with filename i.e. - /tmp/data.raw
