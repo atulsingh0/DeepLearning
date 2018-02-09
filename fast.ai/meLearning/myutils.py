@@ -124,7 +124,7 @@ def dataCategorizer(catg, path):
     and move all the respective file in it
     """
     os.chdir(path)
-    [os.makedirs(dir) for dir in catg]
+    [make_dirs(dir) for dir in catg]
     for name in catg:
         for f in glob.glob(name+"*"):
               shutil.move(f, name)
@@ -141,9 +141,11 @@ def data_sampler(n, src, tgt):
     # creating tgt directory if not existing
     make_dirs(tgt)
     files=np.random.choice(os.listdir(src), n, replace=False)
+    #print(files)
     for file in files:
         shutil.move(os.path.join(src,file), tgt)
-        
+    print("Total Files moved to ",tgt," : ", len(files))    
+
 
 def data_splitter(src, tgt, nsample, nvalid, labels=None):
     """
@@ -151,6 +153,7 @@ def data_splitter(src, tgt, nsample, nvalid, labels=None):
     """
     
     # creating directories
+    print("Creating train_1, valid_1 and sample_1 directories....")
     train_dir=os.path.join(tgt,'train_1')
     valid_dir=os.path.join(tgt,'valid_1')
     sample_dir=os.path.join(tgt,'sample_1')
@@ -160,19 +163,27 @@ def data_splitter(src, tgt, nsample, nvalid, labels=None):
     make_dirs(sample_dir)
     
     # copying all files into train_1
+    print("Copying all the files into train_1....")
     for filename in glob.glob(os.path.join(src, '*.*')):
         shutil.copy(filename, train_dir)
+    print("Total Files are: ", len(os.listdir(train_dir)))
     
-    # Moving Files
-    data_sampler(nvalid, train_dir, valid_dir)
-    data_sampler(nsample, train_dir, sample_dir)
     
-    labels = list(labels)
     # now categorizing 
     if labels:
+        print("Categorizing the data as per labels")
         dataCategorizer(labels, train_dir)
-        dataCategorizer(labels, valid_dir)
-        dataCategorizer(labels, sample_dir)
+        
+    # Moving Files
+    print("Moving files now....")
+    if labels:
+        for label in labels:
+            data_sampler(nvalid, os.path.join(train_dir, label), os.path.join(valid_dir, label))
+            data_sampler(nsample, os.path.join(train_dir, label), os.path.join(sample_dir, label))
+    else:
+        data_sampler(nvalid, train_dir, valid_dir)
+        data_sampler(nsample, train_dir, sample_dir)
+    
         
         
 def df_save(df, path):
