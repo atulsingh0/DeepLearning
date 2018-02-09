@@ -5,12 +5,14 @@ import os
 import glob
 import shutil
 import stat
+import pathlib
 import matplotlib.pyplot as plt
 
 
 
 def df_sample(df, n):
     '''
+    Return Data Sample n%
         df: Inp - Pass the dataframe df
         n : Inp - Fraction of data
         df_sample : Out - dataframe with n% of data df
@@ -99,7 +101,15 @@ def clear_dir(path_):
         # of a symbolic linked directory.
         raise OSError("Cannot call clear_dir() on a symbolic link")
 
-        
+
+def make_dirs(dir):
+    """
+    dir : path of directory
+    Do not throw error if dir exists
+    """
+    pathlib.Path(dir).mkdir(parents=True, exist_ok=True) 
+
+    
 def dataCategorizer(catg, path):
     """
     Categorizing the data files in different folders
@@ -127,16 +137,46 @@ def data_sampler(n, src, tgt):
     src = Source directory
     tgt = Target directory
     """
-    #clear_dir(tgt)
-    shutil.rmtree(tgt) # removing the whole tree
-    os.mkdir(tgt)  # recreating the folder again
-    files=np.random.choice(os.listdir(src), n)
+    
+    # creating tgt directory if not existing
+    make_dirs(tgt)
+    files=np.random.choice(os.listdir(src), n, replace=False)
     for file in files:
         shutil.move(os.path.join(src,file), tgt)
         
-              
+
+def data_splitter(src, tgt, nsample, nvalid, labels=None):
+    """
+    Dividing the data into Train, Valid & Sample
+    """
+    
+    # creating directories
+    train_dir=os.path.join(tgt,'train_1')
+    valid_dir=os.path.join(tgt,'valid_1')
+    sample_dir=os.path.join(tgt,'sample_1')
+    
+    make_dirs(train_dir)
+    make_dirs(valid_dir)
+    make_dirs(sample_dir)
+    
+    # copying all files into train_1
+    for filename in glob.glob(os.path.join(src, '*.*')):
+        shutil.copy(filename, train_dir)
+    
+    # Moving Files
+    data_sampler(nvalid, train_dir, valid_dir)
+    data_sampler(nsample, train_dir, sample_dir)
+    
+    labels = list(labels)
+    # now categorizing 
+    if labels:
+        dataCategorizer(labels, train_dir)
+        dataCategorizer(labels, valid_dir)
+        dataCategorizer(labels, sample_dir)
+        
+        
 def df_save(df, path):
-    """To Save any dataset
+    """To Save any dataset as pickled file
     df   : Inp - Any data type variable
     path : Inp - Full Path with filename i.e. - /tmp/data.raw
     """
@@ -144,8 +184,9 @@ def df_save(df, path):
     return None
     
 
-def to_read(path):
+def df_load(path):
     """
+    Loading  pickled file
     path : Inp - Full Path with filename i.e. - /tmp/data.raw
     """
     return pickle.load(open(path, 'rb'))
@@ -153,6 +194,7 @@ def to_read(path):
 
 def rmse(x,y):
     """
+    Return the RMSE calculation
     x,y : Inp - Input Values
     """
     return np.sqrt(np.mean(np.square(x-y)))
@@ -160,6 +202,7 @@ def rmse(x,y):
     
 def split_vals(X,y,p):
     """
+    Split the data into Train and Test
     X : Inp - Input X
     y : Inp - Input y
     p : Inp - Percentage, i.e- 10% - 0.1
@@ -173,6 +216,7 @@ def split_vals(X,y,p):
 
 def print_score(clf, X_train, y_train, X_test, y_test):
 	"""
+    Print RMSE, SCORE of Train and Test Data
 	clf : Inp - Model
 	X_test, X_test, y_train, y_test : Inp - Data Variable
 	res : Out - scores
@@ -233,6 +277,9 @@ def plotting_keras_acc_ax(history):
 '''	
 
 def plotting_keras_acc(history):
+    """
+    Plot Keras Accuracy and Loss from fit history
+    """
     history = history.history
     train_acc = history['acc']
     val_acc = history['val_acc']
