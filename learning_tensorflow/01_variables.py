@@ -30,7 +30,7 @@ with tf.Session() as session:
     session.run(model)
     print(session.run(y))
     print(session.run(a))
-    
+
 
 X = np.random.randint(1000, size=1000)
 s = tf.Session()
@@ -38,7 +38,7 @@ s.run(model)
 for i in range(5):
     x = x+1
     print(s.run(x))
-    
+
 with tf.Session() as session:
     merged = tf.summary.merge_all()
     writer = tf.summary.FileWriter("D:/Git/DeepLearning/learning_tensorflow/basic", session.graph)
