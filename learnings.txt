@@ -2,7 +2,5 @@
 # TRAIN/DEV/TEST dataset
  Small Data: 60,20,20
  Big Data: 98,1,1      # go with No of records in DEV and TEST not the %
- 
+
 # TRAIN/DEV/TEST should come from save Data Distribution
- 
- 

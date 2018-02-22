@@ -11,26 +11,30 @@ import matplotlib.pyplot as plt
 
 def df_sample(df, n):
     '''
-        df: Inp - Pass the dataframe df
-        n : Inp - Fraction of data
-        df_sample : Out - dataframe with n% of data df
+    Fetch sample data from dataframe
+        df: Pass the dataframe df
+        n : Fraction of data
+        df_sample : dataframe with n% of data df
     '''
     df_sample = df.sample(frac=n)
     return df_sample
 
 
 def df_summary(df):
+    '''
+    Return dataframe info
+    '''
     print("Summary :")
     return (df.info())
 
 
 def df_null(df):
-    """Null Check in DataFrame"""
+    '''Null Check in DataFrame'''
     return df.isnull().sum()
 
 
 def df_null_per(df):
-    """Null Percentage Check in DataFrame"""
+    '''Null Percentage Check in DataFrame'''
     return df.isnull().sum().sort_index()/len(df)
 
 
@@ -39,17 +43,17 @@ def df_remNull(df, p, type=''):
     Remove the Columns which is having more than
     p% NUll in it
 
-    df: Inp - Input DataFrame
-    p : Inp - Percentage, , 0.1 = 10%
-    type : Inp - 'r' for row, 'c' for column
-                  By default it will remove columns as well as row
+    df: Input DataFrame
+    p : Percentage, i.e. -  0.1 = 10%
+    type : 'r' for row, 'c' for column
+            By default it will remove columns as well as row
     '''
     #return df[df.columns[list(df.isnull().sum()/df.size < p )]]
     if type=='c':
          df2 = df.loc[:, df.isnull().sum()/len(df) < p ]
-    else if type=='r':
+    elif type=='r':
         df2 = df.loc[(df.isnull().transpose().sum()/len(df) < p ).index]
-    else
+    else:
         df2 = df.loc[:, df.isnull().sum()/len(df) < p ]
         df2 = df2.loc[:, df.isnull().sum()/len(df) < p ]
     return df2
@@ -60,8 +64,8 @@ def df_remColNull(df, p):
     Remove the Columns which is having more than
     p% NUll in it
 
-    df: Inp - Input DataFrame
-    p : Inp - Percentage, , 0.1 = 10%
+    df: Input DataFrame
+    p : Percentage, , 0.1 = 10%
     '''
     #return df[df.columns[list(df.isnull().sum()/df.size < p )]]
     return df.loc[:, df.isnull().sum()/len(df) < p ]
@@ -72,8 +76,8 @@ def df_remRowNull(df, p):
     Remove the Row which is having more than
     p% NUll in it
 
-    df: Inp - Input DataFrame
-    p : Inp - Percentage, 0.1 = 10%
+    df: Input DataFrame
+    p : Percentage, 0.1 = 10%
     '''
     return df.loc[(df.isnull().transpose().sum()/len(df) < p ).index]
 
@@ -122,9 +126,12 @@ def clear_dir(path_):
 
 
 def dataCategorizer(catg, path):
-    """
+    '''
     Categorizing the data files in different folders
     based on the categories list
+
+    catg: List of categories
+    path: Data Directory
 
     i.e.-
     path is contains 2 kind of files - dogs n cats
@@ -133,7 +140,7 @@ def dataCategorizer(catg, path):
 
     create 2 folders in $path - dog and cat
     and move all the respective file in it
-    """
+    '''
     os.chdir(path)
     [os.makedirs(dir) for dir in catg]
     for name in catg:
@@ -142,12 +149,12 @@ def dataCategorizer(catg, path):
 
 
 def data_sampler(n, src, tgt):
-    """
+    '''
     Random Sample of files....
-    n = No of files needed as sample
-    src = Source directory
-    tgt = Target directory
-    """
+    n : No of files needed as sample
+    src : Source directory
+    tgt : Target directory
+    '''
     #clear_dir(tgt)
     shutil.rmtree(tgt) # removing the whole tree
     os.mkdir(tgt)  # recreating the folder again
@@ -157,34 +164,39 @@ def data_sampler(n, src, tgt):
 
 
 def df_save(df, path):
-    """To Save any dataset
+    '''
+    To Save any dataset
     df   : Inp - Any data type variable
     path : Inp - Full Path with filename i.e. - /tmp/data.raw
-    """
+    '''
     pickle.save(df, open(path, 'wb'))
     return None
 
 
 def to_read(path):
-    """
+    '''
     path : Inp - Full Path with filename i.e. - /tmp/data.raw
-    """
+    '''
     return pickle.load(open(path, 'rb'))
 
 
 def rmse(x,y):
-    """
-    x,y : Inp - Input Values
-    """
+    '''
+    Calculate Root mean Square Error for x and y
+
+    x,y : Input Values
+    '''
     return np.sqrt(np.mean(np.square(x-y)))
 
 
 def split_vals(X,y,p):
-    """
-    X : Inp - Input X
-    y : Inp - Input y
-    p : Inp - Percentage, i.e- 10% - 0.1
-    """
+    '''
+    Split the data into train and test sets by p%
+
+    X : Input X
+    y : Input y
+    p : Percentage, i.e- 10% - 0.1
+    '''
     n = len(X) - int(np.ceil(len(X)*p))
     X_train, X_test = X[:n].copy(), X[n:].copy()
     y_train, y_test = y[:n].copy(), y[n:].copy()
@@ -253,7 +265,7 @@ def plotting_keras_acc_ax(history):
     plt.show()
 '''
 
-def plotting_keras_acc(history):
+def plot_keras_acc(history):
     history = history.history
     train_acc = history['acc']
     val_acc = history['val_acc']
