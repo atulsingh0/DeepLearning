@@ -163,21 +163,28 @@ def data_sampler(n, src, tgt):
         shutil.move(os.path.join(src,file), tgt)
 
 
-def df_save(df, path):
+def df_save(df, path, type='csv'):
     '''
-    To Save any dataset
-    df   : Inp - Any data type variable
-    path : Inp - Full Path with filename i.e. - /tmp/data.raw
+    To Save any dataset as pickle
+    df   : Any data type variable
+    path : Full Path with filename i.e. - /tmp/data.raw
+    type : default as csv
+           Values -  csv or pickle
     '''
-    pickle.save(df, open(path, 'wb'))
+    if type=='csv':pd.to_csv(path)
+    if type=='pickle': pickle.save(df, open(path, 'wb'))
     return None
 
 
-def to_read(path):
+def df_read(path, type='csv'):
     '''
-    path : Inp - Full Path with filename i.e. - /tmp/data.raw
+    path : Full Path with filename i.e. - /tmp/data.raw
+    type : default as csv
+           Values -  csv or pickle
     '''
-    return pickle.load(open(path, 'rb'))
+    if type=='csv':data = pd.read_csv(path)
+    if type=='pickle': data = pickle.load(open(path, 'rb'))
+    return data
 
 
 def rmse(x,y):
