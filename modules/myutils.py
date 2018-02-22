@@ -5,6 +5,7 @@ import os
 import glob
 import shutil
 import stat
+import pathlib
 import matplotlib.pyplot as plt
 
 
@@ -125,13 +126,18 @@ def clear_dir(path_):
         raise OSError("Cannot call clear_dir() on a symbolic link")
 
 
+def make_dirs(dir):
+    """
+    dir : path of directory
+    Do not throw error if dir exists
+    """
+    pathlib.Path(dir).mkdir(parents=True, exist_ok=True)
+
+
 def dataCategorizer(catg, path):
-    '''
+    """
     Categorizing the data files in different folders
     based on the categories list
-
-    catg: List of categories
-    path: Data Directory
 
     i.e.-
     path is contains 2 kind of files - dogs n cats
@@ -140,27 +146,67 @@ def dataCategorizer(catg, path):
 
     create 2 folders in $path - dog and cat
     and move all the respective file in it
-    '''
+    """
     os.chdir(path)
-    [os.makedirs(dir) for dir in catg]
+    [make_dirs(dir) for dir in catg]
     for name in catg:
         for f in glob.glob(name+"*"):
               shutil.move(f, name)
 
 
 def data_sampler(n, src, tgt):
-    '''
+    """
     Random Sample of files....
     n : No of files needed as sample
     src : Source directory
     tgt : Target directory
-    '''
-    #clear_dir(tgt)
-    shutil.rmtree(tgt) # removing the whole tree
-    os.mkdir(tgt)  # recreating the folder again
-    files=np.random.choice(os.listdir(src), n)
+    """
+
+    # creating tgt directory if not existing
+    make_dirs(tgt)
+    files=np.random.choice(os.listdir(src), n, replace=False)
+    #print(files)
     for file in files:
         shutil.move(os.path.join(src,file), tgt)
+    print("Total Files moved to ",tgt," : ", len(files))
+
+
+def data_splitter(src, tgt, nsample, nvalid, labels=None):
+    """
+    Dividing the data into Train, Valid & Sample
+    """
+
+    # creating directories
+    print("Creating train_1, valid_1 and sample_1 directories....")
+    train_dir=os.path.join(tgt,'train_1')
+    valid_dir=os.path.join(tgt,'valid_1')
+    sample_dir=os.path.join(tgt,'sample_1')
+
+    make_dirs(train_dir)
+    make_dirs(valid_dir)
+    make_dirs(sample_dir)
+
+    # copying all files into train_1
+    print("Copying all the files into train_1....")
+    for filename in glob.glob(os.path.join(src, '*.*')):
+        shutil.copy(filename, train_dir)
+    print("Total Files are: ", len(os.listdir(train_dir)))
+
+
+    # now categorizing
+    if labels:
+        print("Categorizing the data as per labels")
+        dataCategorizer(labels, train_dir)
+
+    # Moving Files
+    print("Moving files now....")
+    if labels:
+        for label in labels:
+            data_sampler(nvalid, os.path.join(train_dir, label), os.path.join(valid_dir, label))
+            data_sampler(nsample, os.path.join(train_dir, label), os.path.join(sample_dir, label))
+    else:
+        data_sampler(nvalid, train_dir, valid_dir)
+        data_sampler(nsample, train_dir, sample_dir)
 
 
 def df_save(df, path, type='csv'):
