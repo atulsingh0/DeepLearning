@@ -6,6 +6,7 @@ import glob
 import shutil
 import stat
 import pathlib
+import pickle
 import matplotlib.pyplot as plt
 
 
@@ -209,27 +210,27 @@ def data_splitter(src, tgt, nsample, nvalid, labels=None):
         data_sampler(nsample, train_dir, sample_dir)
 
 
-def df_save(df, path, type='csv'):
+def df_save(df, path, type='c'):
     '''
     To Save any dataset as pickle
     df   : Any data type variable
     path : Full Path with filename i.e. - /tmp/data.raw
-    type : default as csv
-           Values -  csv or pickle
+    type : default as c
+           Values -  c for csv or p for pickle
     '''
-    if type=='csv':pd.to_csv(path)
-    if type=='pickle': pickle.save(df, open(path, 'wb'))
+    if type=='c':pd.to_csv(path)
+    if type=='p': pickle.dump(df, open(path, 'wb'))
     return None
 
 
-def df_read(path, type='csv'):
+def df_read(path, type='c'):
     '''
     path : Full Path with filename i.e. - /tmp/data.raw
-    type : default as csv
-           Values -  csv or pickle
+    type : default as c
+           VValues -  c for csv or p for pickle
     '''
-    if type=='csv':data = pd.read_csv(path)
-    if type=='pickle': data = pickle.load(open(path, 'rb'))
+    if type=='c':data = pd.read_csv(path)
+    if type=='p': data = pickle.load(open(path, 'rb'))
     return data
 
 
@@ -277,8 +278,8 @@ def reverse_dict(dic):
 	rev = dict([(value, key) for (key,value) in dic.items()])
 	return rev
 
-'''
-def plotting_keras_acc_ax(history):
+
+def plot_keras_acc_ax(history):
     history = history.history
     train_acc = history['acc']
     val_acc = history['val_acc']
@@ -292,8 +293,7 @@ def plotting_keras_acc_ax(history):
     train_acc_avg = np.repeat(np.mean(train_acc), len(hr))
     val_acc_avg = np.repeat(np.mean(val_acc), len(hr))
 
-    fig = plt.figure(figsize=(12,9))
-    f, ax = plt.subplots(1,2)
+    fig, ax = plt.subplots(figsize=(22,9), ncols=2)
 
     ax[0].plot(epochs, train_loss, '.-', label='Train Loss')
     ax[0].plot(epochs, val_loss, '-', label='Validation Loss')
@@ -316,7 +316,7 @@ def plotting_keras_acc_ax(history):
     ax[1].grid()
     ax[1].legend()
     plt.show()
-'''
+
 
 def plot_keras_acc(history):
     history = history.history
@@ -354,3 +354,32 @@ def plot_keras_acc(history):
     plt.grid()
     plt.legend()
     plt.show()
+
+
+def moving_average(a, n=3) :
+    '''
+    Calculate the moving average for ocuurance n
+
+    a : list like Values
+    n : no of occurance
+    '''
+    a = np.concatenate((np.zeros(n-1), a))
+    ret = np.cumsum(a, dtype=float)
+    ret[n:] = ret[n:] - ret[:-n]
+    return ret[n - 1:] / n
+
+
+def moving_average_exp(a, n=3):
+    '''
+    Calculate the exponential moving average for ocuurance n
+
+    a : list like Values
+    n : no of occurance
+    '''
+    frac = (1 - (1/float(n)))
+
+    lis = np.zeros((a.shape[0] + 1))
+    for idx, val in enumerate(a):
+        lis[idx] = frac*lis[idx-1] + (1-frac)*val
+    ret = lis[:-1]
+    return ret
