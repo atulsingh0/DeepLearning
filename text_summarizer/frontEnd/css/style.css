@@ -1,0 +1,313 @@
+body {
+    margin: 10px auto 0;
+    width: 1024px;
+    font-family: arial;
+    font-size: 14px;
+}
+
+hr {
+    width: 100%;
+    float: left;
+    clear: both;
+}
+
+h2 {
+    color: #3e8acc;
+    margin: 0px;
+}
+
+h3 {
+    color: #ffffff;
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+button {
+    background: #3e8acc;
+    border: 1px solid;
+    padding: 7px 12px;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 134px;
+}
+
+input {
+    padding: 5px;
+    width: 250px;
+    float: left;
+    border-radius: 2px;
+    border: 1px solid #d2d3d4;
+}
+
+select {
+    padding: 5px;
+    width: 180px;
+    margin-right: 10px;
+    float: left;
+    border-radius: 2px;
+    border: 1px solid #d2d3d4;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url(../images/dropdown.png) right / 20px no-repeat #fff;
+    padding-right: 20px;
+}
+
+table {
+    margin-top: 5%;
+}
+
+tr {
+    font-family: arial;
+    font-size: 14px;
+}
+
+th {
+    font-size: 17px;
+}
+
+.choosefile,
+.documentType {
+    clear: both;
+}
+
+.documentType {
+    float: right;
+    clear: both;
+}
+
+#filetoupload {
+    width: 100px;
+}
+
+.uploadPreview {
+    clear: both;
+    position: relative;
+}
+
+.uploadPreview fieldset {
+    border: 1px dashed #3e8acc;
+    margin-bottom: 7px;
+    clear: both;
+    display: block;
+    float: left;
+    width: 100%;
+}
+
+.left-side {
+    width: 72%;
+    float: left;
+    margin: 5px 0;
+}
+
+.right-side {
+    width: 26%;
+    float: left;
+    margin: 5px 0;
+}
+
+.right-side>img {
+    width: 250px;
+    height: 150px;
+}
+
+.uploadPreview .right-side .modal {
+    position: absolute;
+    right: 0;
+    text-align: right;
+}
+
+.uploadPreview .right-side .modal img {
+    height: 300px;
+    width: 400px;
+    border: 10px solid;
+}
+
+.professional .uploadPreview .right-side .modal img {
+    height: 400px;
+    width: 500px;
+    border: 10px solid;
+}
+
+.uploadPreview fieldset legend {
+    border: 1px solid;
+    padding: 5px 7px 3px;
+    background: #3e8acc;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: #fff;
+    text-align: center;
+    width: 180px;
+    margin: 0 auto;
+}
+
+.uploadPreview fieldset .left-side div {
+    margin: 5px 0;
+    float: left;
+    width: 100%;
+}
+
+.uploadPreview div label {
+    width: 200px;
+    padding-right: 20px;
+    display: block;
+    float: left;
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    top: 0px;
+    left: -96px
+}
+
+.folder-img {
+    width: 24px;
+    background-image: url("../images/folder-icon.png");
+    background-repeat: no-repeat;
+    padding: 0;
+    display: block;
+    margin: 7px 0px 0 0;
+}
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+
+a.plus {
+    color: #337ab7;
+    text-decoration: none;
+    float: left;
+}
+
+a.plus img {
+    margin: 6px 0px 0 12px;
+}
+
+a.minus img {
+    margin: 0px 0px 0 12px;
+}
+
+.thumb {
+    display: none
+}
+
+.added-elem {
+    float: left;
+    clear: both;
+    margin-top: 10px;
+}
+
+.ui-accordion .ui-accordion-content {
+    padding: 0 10px;
+}
+
+.content {
+    clear: both;
+    width: 100%;
+}
+
+.minus {
+    text-decoration: none;
+    float: left;
+    display: inline;
+    margin: 6px 0px 0 0px;
+}
+
+.minus img,
+.plus img {
+    max-width: 24px;
+}
+
+.loader {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.loader-img {
+    position: absolute;
+    top: 50%;
+    margin-top: -15px;
+    color: #FFF;
+    text-align: center;
+    width: 100%;
+}
+
+.loader-img span {
+    display: inline-block;
+    background-image: url("../images/loader.gif");
+    width: 100px;
+    height: 100px;
+}
+
+.upload-section {
+    width: 100%;
+}
+
+.upload-section>div {
+    clear: both;
+    height: 165px;
+    overflow-y: auto
+}
+
+.upload-section>h3,
+.preview-section h3 {
+    background: #ededed;
+    color: #000000;
+    clear: both;
+}
+
+.upload-section>h3.ui-state-active,
+.preview-section h3.ui-state-active {
+    background: #3e8acc;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+#tabs>div {
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 300px;
+}
+
+#tabs>ul li.ui-tabs-active.ui-state-active {
+    background: #3e8acc;
+    font-weight: bold;
+}
+
+.uploadPreview>span {
+    position: absolute;
+    left: 40%;
+    top: 40%;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+/* The Close Button */
+
+.close {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    color: black;
+    font-size: 40px;
+    font-weight: bold;
+    /* transition: 0.3s; */
+    cursor: pointer;
+}
