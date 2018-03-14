@@ -8,7 +8,7 @@ import shutil
 import stat
 import pathlib
 import pickle
-import spacy
+#import spacy
 
 
 
