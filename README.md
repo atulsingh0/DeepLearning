@@ -11,6 +11,10 @@
 
 
 ## Algorithms
+* Hypothesis Testing  
+  * t-test  
+  * Chi-square test
+* ANOVA  
 * Decision Tree  
 * Random Forest  
 * Apriori Algorithm  
@@ -19,6 +23,9 @@
 * Logistic Regression  
 * Ensemble Methods  
 * Clustering Algorithms - K Means, Association Rules
+  * Hierarchical clustering  
+  * Partitional clustering  
+
 * Principal Component Analysis
 * Singular Value Decomposition  
 * Independent Component Analysis  
