@@ -384,3 +384,8 @@ def moving_average_exp(a, n=3):
         lis[idx] = frac*lis[idx-1] + (1-frac)*val
     ret = lis[:-1]
     return ret
+
+
+def get_one_hot(targets, nb_classes):
+    """To generate one hot encoder"""
+    return np.eye(nb_classes)[np.array(targets).reshape(-1)]
