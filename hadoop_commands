@@ -1,0 +1,36 @@
+
+
+# mysql connect
+mysql -u root -p
+
+# Sqoop import
+sqoop import --connect jdbc:mysql://localhost:3306/hive  --driver com.mysql.jdbc.Driver --username root --password hadoop --table TBL
+
+# hive
+## beeline connection
+beeline -u jdbc:hive2://localhost:10000/default -n scott -w password_file
+
+or
+beeline ->
+!connect jdbc:hive2://<host>:<port>/<db>;auth=noSasl hiveuser pass
+
+## Database list
+show databases;
+
+## table list
+show tables;
+
+## desc table
+describe <table_name>
+describe extended <table_name>
+describe formatted <table_name>
+show create table <table_name>
+
+## external table creation
+CREATE TABLE weather (wban INT, date STRING, precip INT ROW FORMAT DELIMITED FIELDS TERMINATED BY ‘,’ LOCATION ‘ /hive/data/weather’;
+
+## enable dynamic partition
+set hive.exec.dynamic.partition.mode=nonstrict
+
+## insert into dynamic partition data from another table
+insert into partitioned_user partition (country) select name, state, country from user_feeder;
