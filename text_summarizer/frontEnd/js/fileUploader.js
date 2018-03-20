@@ -15,12 +15,6 @@ var addpersonalElm = `<div class="added-elem">
                 <a class="thumb">
 
                 </a>
-                <a href="#" class="plus">
-                  <img src="images/add.png" onclick="addNewDocument(this)"/>
-                </a>
-                <a href="#" class="minus">
-                  <img src="images/delete.png" onclick="removeDocument(this)"/>
-                </a>
             </div>`;
 var addEduElm = `<div class="added-elem">
                   <select>
@@ -37,13 +31,6 @@ var addEduElm = `<div class="added-elem">
                 </div>
                 <a class="thumb">
 
-                </a>
-                <a href="#" class="plus">
-                  <img src="images/add.png" onclick="addNewDocument(this)"/>
-                </a>
-                <a href="#" class="minus">
-                  <img src="images/delete.png" onclick="removeDocument(this)"/>
-                </a>
             </div>`;
 
 var addProfElm = `<div class="added-elem">
@@ -54,19 +41,12 @@ var addProfElm = `<div class="added-elem">
                 </div>
                 <a class="thumb">
 
-                </a>
-                <a href="#" class="plus">
-                  <img src="images/add.png" onclick="addNewDocument(this)"/>
-                </a>
-                <a href="#" class="minus">
-                  <img src="images/delete.png" onclick="removeDocument(this)"/>
-                </a>
             </div>`;
 
 function submit() {
     var allImages = document.querySelectorAll("a.thumb");
     var allElemProf = $(".professional-info .added-elem");
-    var allElem = $(".personal-info .added-elem,.educational-info .added-elem");
+    var allElem = $(".personal-info .added-elem");
     var upload_data = [];
     $(allElem).map(function(index, thisinst) {
         $(thisinst).find("select").val() !== -1 && $(thisinst).find("select").val() !== "-1" && $(thisinst).find("select").val() !== undefined ? upload_data.push({ "doc_type": $(thisinst).find("select").val(), "doc_name": $(thisinst).find("input[type=text]").val() }) : "";
@@ -88,41 +68,66 @@ function submit() {
     for (var i = 0; i < allImages.length; i++) {
         allImages[i].click();
     }
-    setTimeout(function() {
+    // setTimeout(function() {
         var serviseBaseUrl = "http://127.0.0.1:5000";
-        $.ajax({
-            type: "POST",
-            url: serviseBaseUrl + "/similar",
-            data: JSON.stringify(upload_data),
-            dataType: "json",
-            contentType: "application/json",
-            success: function(dataSample) {
-                $(".uploadPreview").empty();
-                $(".loader").hide();
-                for (var i = 0; i < dataSample.length; i++) {
-                    var documentBlock = "<div class='documentBlock'>";
-                    var docType = dataSample[i].doc_type == "pan" ? "Pancard" : dataSample[i].doc_type == "aadhar" ? "Aadhar Card" : dataSample[i].doc_type == "passport" ? "Passport" : dataSample[i].doc_type == "dl" ? "Driving Licence" : dataSample[i].doc_type == "twelve" ? "12th" : dataSample[i].doc_type == "tenth" ? "10th" : dataSample[i].doc_type;
-                    documentBlock += '<fieldset><legend align="center">' + docType + '</legend><div class="left-side">';
-                    for (var key in dataSample[i]) {
-                        key !== "doc_type" ? documentBlock += '<div><label><b>' + key + ': </b></label>' + dataSample[i][key] + '</div>' : "";
-                    }
-                    var imgSrc = $("a.thumb[doc_type=" + dataSample[i].doc_type + "]").attr("href");
-                    documentBlock += "</div><div class='right-side'><img src='" + imgSrc + "' alt='" + docType + "' title='" + docType + "'/></div></fieldset></div>";
-                    if (dataSample[i].doc_type == "pan" || dataSample[i].doc_type == "aadhar" || dataSample[i].doc_type == "passport" || dataSample[i].doc_type == "dl") {
-                        $(".personal .uploadPreview").append(documentBlock);
-                    } else if (dataSample[i].doc_type == "tenth" || dataSample[i].doc_type == "twelve" || dataSample[i].doc_type == "grad" || dataSample[i].doc_type == "pg") {
-                        $(".educational .uploadPreview").append(documentBlock);
-                    } else {
-                        $(".professional .uploadPreview").append(documentBlock);
-                    }
-                }
-            },
-            error: function() {
-                $(".loader").hide();
-                alert("Unable to process.");
-            }
-        });
-    }, 1000);
+        $.support.cors = true;
+       $.ajax({
+               type: "GET",
+               url:"http://127.0.0.1:5000/textSum",
+               data: JSON.stringify(upload_data),
+               dataType: "jsonp",
+               // contentType: "application/json; charset=utf-8",
+
+       error: function (xhr, ajaxOptions, thrownError) {
+
+           alert("sucesse");
+           alert("Summary has been saved in local downloads");
+           $(".loader").hide();
+
+      },
+       success:function(result){
+             alert("sucesse");
+             alert("Summary has been saved in local downloads");
+             // console.log(result);
+             $(".loader").hide();
+       }
+     });
+    //     $.ajax({
+    //         type: "GET",
+    //         url: serviseBaseUrl + "/textSum",
+    //         data: JSON.stringify(upload_data),
+    //         dataType: "jsonp",
+    //         contentType: "application/json; charset=utf-8",
+    //         success: function(dataSample) {
+    //                  $(".loader").hide();
+    //                  alert(dataSample['doc_summary']);
+    //             // $(".uploadPreview").empty();
+    //             // $(".loader").hide();
+    //             // // // for (var i = 0; i < dataSample.length; i++) {
+    //             //     var documentBlock = "<div class='documentBlock'>";
+    //             //     var docType = dataSample.doc_type == "text" ? "Text File" : dataSample.doc_type == "pdf" ? "Pdf File" : dataSample.doc_type == "passport" ? "Passport" : dataSample.doc_type == "dl" ? "Driving Licence" : dataSample.doc_type == "twelve" ? "12th" : dataSample.doc_type == "tenth" ? "10th" : dataSample.doc_type;
+    //             //     documentBlock += '<fieldset><legend align="center">' + docType + '</legend><div class="left-side">';
+    //             //     for (var key in dataSample) {
+    //             //         key !== "doc_type" ? documentBlock += '<div><label><b>' + key + ': </b></label>' + dataSample[key] + '</div>' : "";
+    //             //     }
+    //             //     //var imgSrc = $("a.thumb[doc_type=" + dataSample[i].doc_type + "]").attr("href");
+    //             //     documentBlock += "</div><div class='left-side'>"+ dataSample.doc_summary + "</div></fieldset></div>";
+    //             //     $(".personal .uploadPreview").append(documentBlock);
+    //             //     if (dataSample.doc_type == "passport" || dataSample.doc_type == "dl") {
+    //             //         $(".personal .uploadPreview").append(documentBlock);
+    //             //     } else if (dataSample.doc_type == "tenth" || dataSample.doc_type == "twelve" || dataSample.doc_type == "grad" || dataSample.doc_type == "pg") {
+    //             //         $(".educational .uploadPreview").append(documentBlock);
+    //             //     } else {
+    //             //         $(".professional .uploadPreview").append(documentBlock);
+    //             //     }
+    //             // // }
+    //         },
+    //         error: function(e) {
+    //             $(".loader").hide();
+    //             alert("Unable to process.");
+    //         }
+    //     });
+    // }, 1000);
 
 }
 
@@ -162,30 +167,30 @@ $(function() {
 
 });
 
-function addNewDocument(elem) {
-    var parentChooseElem = $(elem).parents(".choosefile");
-    var current_docList = [];
-    $(parentChooseElem).find("select").map(function(index, valueindex) {
-        current_docList.push($(valueindex).val());
-    });
-    var currentSection = $(parentChooseElem).attr("section-name");
-    var addElem = currentSection == "personal" ? addpersonalElm : currentSection == "edu" ? addEduElm : addProfElm;
-    if ($(elem).parents(".added-elem").find("select").val() == "-1") {
-        alert("Please select document type before.");
-    } else if ($(parentChooseElem).find(".added-elem").last().find("input[type=text]").val() == "") {
-        alert("Please upload document before.");
-    } else if (!$(parentChooseElem).parent().hasClass("professional-info") && $(parentChooseElem).find(".added-elem").length == 4) {
-        alert("Can not add any more document.")
-    } else {
-        $(parentChooseElem).find(".added-elem").find("select").attr("disabled", true);
-        $(parentChooseElem).append(addElem);
-        $(parentChooseElem).find("select").last().find("option").map(function(index, thisinst) {
-            if (isInArray(thisinst.value, current_docList)) {
-                thisinst.setAttribute("disabled", true);
-            }
-        });
-    }
-}
+// function addNewDocument(elem) {
+//     var parentChooseElem = $(elem).parents(".choosefile");
+//     var current_docList = [];
+//     $(parentChooseElem).find("select").map(function(index, valueindex) {
+//         current_docList.push($(valueindex).val());
+//     });
+//     var currentSection = $(parentChooseElem).attr("section-name");
+//     var addElem = currentSection == "personal" ? addpersonalElm : currentSection == "edu" ? addEduElm : addProfElm;
+//     if ($(elem).parents(".added-elem").find("select").val() == "-1") {
+//         alert("Please select document type before.");
+//     } else if ($(parentChooseElem).find(".added-elem").last().find("input[type=text]").val() == "") {
+//         alert("Please upload document before.");
+//     } else if (!$(parentChooseElem).parent().hasClass("professional-info") && $(parentChooseElem).find(".added-elem").length == 4) {
+//         alert("Can not add any more document.")
+//     } else {
+//         $(parentChooseElem).find(".added-elem").find("select").attr("disabled", true);
+//         $(parentChooseElem).append(addElem);
+//         $(parentChooseElem).find("select").last().find("option").map(function(index, thisinst) {
+//             if (isInArray(thisinst.value, current_docList)) {
+//                 thisinst.setAttribute("disabled", true);
+//             }
+//         });
+//     }
+// }
 
 function cancelupload() {
     $(".uploadPreview").empty();
@@ -196,8 +201,6 @@ function cancelupload() {
 
 function addBlankTemp() {
     $(".personal-info .choosefile").append(addpersonalElm);
-    $(".educational-info .choosefile").append(addEduElm);
-    $(".professional-info .choosefile").append(addProfElm);
 }
 
 function isInArray(value, array) {
@@ -215,30 +218,30 @@ function getBase64(file) {
     };
 }
 
-function removeDocument(elem) {
-    var contentlength = $(elem).parents(".choosefile").find(".added-elem").length;
-    if (contentlength == 1) {
-        return
-    } else if (contentlength == 2) {
-        var current_doc_elem = $(elem).parent().parent();
-        var docIndex = doc_type.indexOf($(current_doc_elem).find("select").val());
-        doc_type.splice(docIndex, 1);
-        $(current_doc_elem).siblings().find("select").removeAttr("disabled");
-
-        $(current_doc_elem).siblings().find("select option[disabled=true]").map(function(index, valueindex) {
-            $(valueindex).removeAttr("disabled");
-        })
-        $(current_doc_elem).remove();
-
-    } else {
-        var current_doc_type = $(elem).parents(".added-elem").find("select").val();
-        var docIndex = doc_type.indexOf(current_doc_type);
-        $(elem).parents(".choosefile").find("select").last().find("option").map(function(index, valueindex) {
-            if (current_doc_type == $(valueindex).val()) {
-                $(valueindex).removeAttr("disabled");
-            }
-        });
-        doc_type.splice(docIndex, 1);
-        $(elem).parents(".added-elem").remove();
-    }
-}
+// function removeDocument(elem) {
+//     var contentlength = $(elem).parents(".choosefile").find(".added-elem").length;
+//     if (contentlength == 1) {
+//         return
+//     } else if (contentlength == 2) {
+//         var current_doc_elem = $(elem).parent().parent();
+//         var docIndex = doc_type.indexOf($(current_doc_elem).find("select").val());
+//         doc_type.splice(docIndex, 1);
+//         $(current_doc_elem).siblings().find("select").removeAttr("disabled");
+//
+//         $(current_doc_elem).siblings().find("select option[disabled=true]").map(function(index, valueindex) {
+//             $(valueindex).removeAttr("disabled");
+//         })
+//         $(current_doc_elem).remove();
+//
+//     } else {
+//         var current_doc_type = $(elem).parents(".added-elem").find("select").val();
+//         var docIndex = doc_type.indexOf(current_doc_type);
+//         $(elem).parents(".choosefile").find("select").last().find("option").map(function(index, valueindex) {
+//             if (current_doc_type == $(valueindex).val()) {
+//                 $(valueindex).removeAttr("disabled");
+//             }
+//         });
+//         doc_type.splice(docIndex, 1);
+//         $(elem).parents(".added-elem").remove();
+//     }
+// }

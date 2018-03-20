@@ -387,5 +387,34 @@ def moving_average_exp(a, n=3):
 
 
 def get_one_hot(targets, nb_classes):
-    """To generate one hot encoder"""
+    """To generate one hot encoder
+    targets - List of nos for which you want to generate one hot
+    nb_classes - Total no of classes"""
     return np.eye(nb_classes)[np.array(targets).reshape(-1)]
+
+
+def reweight_distribution(original_distribution, prob_temp=0.5):
+    """Redistribute the probability based on temp"""
+    distribution = np.log(original_distribution)/prob_temp
+    distribution = np.exp(distribution)
+    return distribution / np.sum(distribution)
+
+
+def word_index_generator(data):
+    """
+    Return word_index from the data passed
+    """
+    word_index = {}
+    uniq_word = list(set(data.split()))
+    word_index = dict((word, uniq_word.index(word)) for word in uniq_word)
+    return word_index
+
+
+def char_index_generator(data):
+    """
+    Return word_index from the data passed
+    """
+    char_index = {}
+    uniq_char = list(set(data))
+    char_index = dict((char, uniq_char.index(char)) for char in uniq_char)
+    return char_index
