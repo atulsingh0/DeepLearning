@@ -18,6 +18,7 @@ CORS(app)
 
 @app.route("/textSum", methods=['POST','GET'])
 def extSummary():
+    time.sleep(10)
     tick = time.time()
     print("tick - "+ str(tick))
     dir_path='/home/atul/Downloads/'
