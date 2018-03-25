@@ -6,4 +6,4 @@ Created on Mon Nov 13 11:10:34 2017
 @author: ashok
 """
 
-NUM_OF_SENTENCES = 20
+NUM_OF_SENTENCES = 10

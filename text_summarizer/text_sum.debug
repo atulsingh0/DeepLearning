@@ -1,0 +1,58 @@
+(dpl) atul@atul:~/Git/DeepLearning/text_summarizer$ python run_server.py
+ * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 329-255-085
+tick - 1521720173.9580734
+/home/atul/Downloads/dummy.txt
+Step 1: Data Parsing
+File type is text
+Step 2: English Language Model loading
+Step 3: Word Embedding loading
+Step 4: Extracting Summary
+parsed :  <class 'spacy.tokens.doc.Doc'>
+words, word_to_localcount, word_to_globalcount
+['indians', 'sabha', 'affairs', 'external', 'tuesday', 'sushma', 'swaraj', 'who', 'rajya', 'iraq', 'minister'] Counter({'external': 1, 'affairs': 1, 'minister': 1, 'sushma': 1, 'swaraj': 1, 'tuesday': 1, 'rajya': 1, 'sabha': 1, 'indians': 1, 'who': 1, 'iraq': 1}) {'indians': 63416, 'sabha': 16000, 'affairs': 132164, 'external': 1399799, 'tuesday': 21710, 'sushma': 386, 'swaraj': 670, 'who': 2701004, 'rajya': 2246, 'iraq': 78240, 'minister': 381901}
+noun_to_score
+{'indians': 0.5436856421937931, 'sabha': 1.8278326346386238, 'affairs': 1.2235044847623135, 'external': -0.398811679359976, 'tuesday': 0.2520016238207408, 'sushma': 1.698961775242181, 'swaraj': 1.824532726313748, 'who': 0.5585826031875576, 'rajya': 2.0194969985273286, 'iraq': 0.8808664718027376, 'minister': 1.3913931640878459}
+get_wordweight
+External Affairs Minister Sushma Swaraj on Tuesday informed the Rajya Sabha that the 39 Indians, who had been abducted in Iraq in 2014, are dead.  {'indians': 0.01704065418726656, 'sabha': 0.06543882523138565, 'affairs': 0.035960060298319906, 'external': -0.00976675748840967, 'tuesday': 0.008746287579759942, 'sushma': 0.0987778484746888, 'swaraj': 0.09712899618835238, 'who': 0.013072335430864848, 'rajya': 0.09068707001364656, 'iraq': 0.02709415393499587, 'minister': 0.03751832673116334}
+get_summary
+0.03957365286133923 External Affairs Minister Sushma Swaraj on Tuesday informed the Rajya Sabha that the 39 Indians, who had been abducted in Iraq in 2014, are dead.
+Total Time 139.297265291214
+127.0.0.1 - - [22/Mar/2018 17:35:14] "GET /textSum?callback=jQuery111204376127548714017_1521719502669&[{%22doc_type%22:%22text%22,%22doc_name%22:%22dummy.txt%22}]&_=1521719502670 HTTP/1.1" 200 -
+tick - 1521720524.9951227
+/home/atul/Downloads/dummy.txt
+Step 1: Data Parsing
+File type is text
+Step 2: English Language Model loading
+Step 3: Word Embedding loading
+Step 4: Extracting Summary
+parsed :  <class 'spacy.tokens.doc.Doc'>
+words, word_to_localcount, word_to_globalcount
+['indians', 'sabha', 'affairs', 'external', 'tuesday', 'sushma', 'swaraj', 'who', 'rajya', 'iraq', 'minister'] Counter({'external': 1, 'affairs': 1, 'minister': 1, 'sushma': 1, 'swaraj': 1, 'tuesday': 1, 'rajya': 1, 'sabha': 1, 'indians': 1, 'who': 1, 'iraq': 1}) {'indians': 63416, 'sabha': 16000, 'affairs': 132164, 'external': 1399799, 'tuesday': 21710, 'sushma': 386, 'swaraj': 670, 'who': 2701004, 'rajya': 2246, 'iraq': 78240, 'minister': 381901}
+noun_to_score
+{'indians': 0.5436856421937931, 'sabha': 1.8278326346386238, 'affairs': 1.2235044847623135, 'external': -0.398811679359976, 'tuesday': 0.2520016238207408, 'sushma': 1.698961775242181, 'swaraj': 1.824532726313748, 'who': 0.5585826031875576, 'rajya': 2.0194969985273286, 'iraq': 0.8808664718027376, 'minister': 1.3913931640878459}
+get_wordweight
+External Affairs Minister Sushma Swaraj on Tuesday informed the Rajya Sabha that the 39 Indians, who had been abducted in Iraq in 2014, are dead.  {'indians': 0.01704065418726656, 'sabha': 0.06543882523138565, 'affairs': 0.035960060298319906, 'external': -0.00976675748840967, 'tuesday': 0.008746287579759942, 'sushma': 0.0987778484746888, 'swaraj': 0.09712899618835238, 'who': 0.013072335430864848, 'rajya': 0.09068707001364656, 'iraq': 0.02709415393499587, 'minister': 0.03751832673116334}
+get_summary
+0.03957365286133923 External Affairs Minister Sushma Swaraj on Tuesday informed the Rajya Sabha that the 39 Indians, who had been abducted in Iraq in 2014, are dead.
+Total Time 117.60452032089233
+127.0.0.1 - - [22/Mar/2018 17:40:43] "GET /textSum?callback=jQuery111204376127548714017_1521719502669&[{%22doc_type%22:%22text%22,%22doc_name%22:%22dummy.txt%22}]&_=1521719502671 HTTP/1.1" 200 -
+tick - 1521720862.0698042
+/home/atul/Downloads/dummy.txt
+Step 1: Data Parsing
+File type is text
+Step 2: English Language Model loading
+Step 3: Word Embedding loading
+Step 4: Extracting Summary
+parsed :  <class 'spacy.tokens.doc.Doc'>
+words, word_to_localcount, word_to_globalcount
+['indians', 'sabha', 'affairs', 'external', 'tuesday', 'sushma', 'swaraj', 'who', 'rajya', 'iraq', 'minister'] Counter({'external': 1, 'affairs': 1, 'minister': 1, 'sushma': 1, 'swaraj': 1, 'tuesday': 1, 'rajya': 1, 'sabha': 1, 'indians': 1, 'who': 1, 'iraq': 1}) {'indians': 63416, 'sabha': 16000, 'affairs': 132164, 'external': 1399799, 'tuesday': 21710, 'sushma': 386, 'swaraj': 670, 'who': 2701004, 'rajya': 2246, 'iraq': 78240, 'minister': 381901}
+noun_to_score
+{'indians': 0.5436856421937931, 'sabha': 1.8278326346386238, 'affairs': 1.2235044847623135, 'external': -0.398811679359976, 'tuesday': 0.2520016238207408, 'sushma': 1.698961775242181, 'swaraj': 1.824532726313748, 'who': 0.5585826031875576, 'rajya': 2.0194969985273286, 'iraq': 0.8808664718027376, 'minister': 1.3913931640878459}
+get_wordweight
+External Affairs Minister Sushma Swaraj on Tuesday informed the Rajya Sabha that the 39 Indians, who had been abducted in Iraq in 2014, are dead.  {'indians': 0.01704065418726656, 'sabha': 0.06543882523138565, 'affairs': 0.035960060298319906, 'external': -0.00976675748840967, 'tuesday': 0.008746287579759942, 'sushma': 0.0987778484746888, 'swaraj': 0.09712899618835238, 'who': 0.013072335430864848, 'rajya': 0.09068707001364656, 'iraq': 0.02709415393499587, 'minister': 0.03751832673116334}
+get_summary
+0.03957365286133923 External Affairs Minister Sushma Swaraj on Tuesday informed the Rajya Sabha that the 39 Indians, who had been abducted in Iraq in 2014, are dead.
+Total Time 106.38283658027649

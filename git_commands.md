@@ -16,9 +16,6 @@
 ### Commiting changes
     git commit -m "msg"
 
-### Reverting any specific file to specific commit point
-    git checkout <commit hash> <filename>
-
 ### Remove last changes and Sync with remote
 git reset --hard
 git pull
@@ -27,3 +24,10 @@ git pull
 git stash
 git pull
 git stash pop
+
+## Discard unstaged changes in Git
+git checkout <full_file_path>    # for a single file
+git checkout --                  #  for all files
+
+### Reverting any specific file to specific commit point
+    git checkout <commit hash> <filename>
