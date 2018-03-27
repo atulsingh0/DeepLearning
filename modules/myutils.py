@@ -19,8 +19,7 @@ def df_sample(df, n):
         n : Fraction of data
         df_sample : dataframe with n% of data df
     '''
-    df_sample = df.sample(frac=n)
-    return df_sample
+    return df.sample(frac=n)
 
 
 def df_summary(df):
@@ -28,7 +27,8 @@ def df_summary(df):
     Return dataframe info
     '''
     print("Summary :")
-    return (df.info())
+    print(df.info())
+    return None
 
 
 def df_null(df):
@@ -58,7 +58,7 @@ def df_remNull(df, p, type=''):
         df2 = df.loc[(df.isnull().transpose().sum()/len(df) < p ).index]
     else:
         df2 = df.loc[:, df.isnull().sum()/len(df) < p ]
-        df2 = df2.loc[:, df.isnull().sum()/len(df) < p ]
+        df2 = df2.loc[(df.isnull().transpose().sum()/len(df) < p ).index]
     return df2
 
 
@@ -400,21 +400,21 @@ def reweight_distribution(original_distribution, prob_temp=0.5):
     return distribution / np.sum(distribution)
 
 
-def word_index_generator(data):
+def word_index_generator(sentences):
     """
-    Return word_index from the data passed
+    Return word_index from the sentences passed
     """
     word_index = {}
-    uniq_word = list(set(data.split()))
+    uniq_word = list(set(sentences.split()))
     word_index = dict((word, uniq_word.index(word)) for word in uniq_word)
     return word_index
 
 
-def char_index_generator(data):
+def char_index_generator(sentences):
     """
-    Return word_index from the data passed
+    Return char_index from the sentences passed
     """
     char_index = {}
-    uniq_char = list(set(data))
+    uniq_char = list(set(sentences))
     char_index = dict((char, uniq_char.index(char)) for char in uniq_char)
     return char_index

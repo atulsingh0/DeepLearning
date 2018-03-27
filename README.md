@@ -25,7 +25,12 @@
 * Clustering Algorithms - K Means, Association Rules
   * Hierarchical clustering  
   * Partitional clustering  
-
 * Principal Component Analysis
 * Singular Value Decomposition  
 * Independent Component Analysis  
+* Dimensionality Reduction Algorithms
+* Gradient Boosting algorithms
+  * GBM
+  * XGBoost
+  * LightGBM
+  * CatBoost
