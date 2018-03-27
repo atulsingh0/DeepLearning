@@ -1,5 +1,5 @@
 from sklearn.externals import joblib
-from flask import Flask,  request,
+from flask import Flask,  request
 from flask_cors import CORS, cross_origin
 import numpy as np
 import re
