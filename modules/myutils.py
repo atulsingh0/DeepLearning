@@ -11,6 +11,13 @@ import pickle
 #import spacy
 
 
+def display_df(df):
+    '''
+    Set pandas max columns and rows(=1000) to display
+    '''
+    with pd.option_context('display.max_rows', 1000, 'display.max_columns', 1000):
+        print(df)
+
 
 def df_sample(df, n):
     '''
@@ -41,27 +48,6 @@ def df_null_per(df):
     return df.isnull().sum().sort_index()/len(df)
 
 
-def df_remNull(df, p, type=''):
-    '''
-    Remove the Columns which is having more than
-    p% NUll in it
-
-    df: Input DataFrame
-    p : Percentage, i.e. -  0.1 = 10%
-    type : 'r' for row, 'c' for column
-            By default it will remove columns as well as row
-    '''
-    #return df[df.columns[list(df.isnull().sum()/df.size < p )]]
-    if type=='c':
-         df2 = df.loc[:, df.isnull().sum()/len(df) < p ]
-    elif type=='r':
-        df2 = df.loc[(df.isnull().transpose().sum()/len(df) < p ).index]
-    else:
-        df2 = df.loc[:, df.isnull().sum()/len(df) < p ]
-        df2 = df2.loc[(df.isnull().transpose().sum()/len(df) < p ).index]
-    return df2
-
-
 def df_remColNull(df, p):
     '''
     Remove the Columns which is having more than
@@ -83,6 +69,27 @@ def df_remRowNull(df, p):
     p : Percentage, 0.1 = 10%
     '''
     return df.loc[(df.isnull().transpose().sum()/len(df) < p ).index]
+
+
+def df_remNull(df, p, type=''):
+    '''
+    Remove the Columns which is having more than
+    p% NUll in it
+
+    df: Input DataFrame
+    p : Percentage, i.e. -  0.1 = 10%
+    type : 'r' for row, 'c' for column
+            By default it will remove columns as well as row
+    '''
+    #return df[df.columns[list(df.isnull().sum()/df.size < p )]]
+    if type=='c':
+         df2 = df_remColNull(df, p)
+    elif type=='r':
+        df2 = df_remRowNull(df, p)
+    else:
+        df2 = df_remRowNull(df, p)
+        df2 = df_remRowNull(df2, p)
+    return df2
 
 
 def _remove_readonly(fn, path_, excinfo):
@@ -244,40 +251,68 @@ def rmse(x,y):
     return np.sqrt(np.mean(np.square(x-y)))
 
 
-def split_vals(X,y,p):
+def split_vals(df,test_size):
+    '''
+    Split the data into train and test sets by p%
+
+    X : Input df
+    test_size : no of records in test set
+    Result: df_train, df_test
+    '''
+    n = len(df) - int(test_size)
+    df_train, df_test = df[:n].copy(), df[n:].copy()
+    print(df_train.shape, df_test.shape)
+    return df_train, df_test
+
+
+def split_vals_per(X,y,percentage):
     '''
     Split the data into train and test sets by p%
 
     X : Input X
     y : Input y
-    p : Percentage, i.e- 10% - 0.1
+    percentage : Percentage, i.e- 10% - 0.1
+    Result: X_train, X_test, y_train, y_test
     '''
-    n = len(X) - int(np.ceil(len(X)*p))
-    X_train, X_test = X[:n].copy(), X[n:].copy()
-    y_train, y_test = y[:n].copy(), y[n:].copy()
-    print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+    test_size = int(np.ceil(len(X)*percentage))
+    X_train, X_test = split_vals(X,test_size)
+    y_train, y_test = split_vals(y,test_size)
+    return X_train, X_test, y_train, y_test
+
+
+def split_vals_no(X,y,test_size):
+    '''
+    Split the data into train and test sets
+
+    X : Input X
+    y : Input y
+    test_count : No of records needed in test set
+    Return X_train, X_test, y_train, y_test
+    '''
+    test_size = int(test_size)
+    X_train, X_test = split_vals(X,test_size)
+    y_train, y_test = split_vals(y,test_size)
     return X_train, X_test, y_train, y_test
 
 
 def print_score(clf, X_train, y_train, X_test, y_test):
-	"""
-	clf : Inp - Model
-	X_test, X_test, y_train, y_test : Inp - Data Variable
-	res : Out - scores
-	"""
-	res = [rmse(clf.predict(X_train), y_train), rmse(clf.predict(X_test), y_test), clf.score(X_train, y_train), clf.score(X_test, y_test)]
-	if hasattr(clf, 'oob_score_'):
-		res = res.append(clf.oob_score_)
-
-	return res
+    '''
+    clf : Inp - Model
+    X_test, X_test, y_train, y_test : Inp - Data Variable
+    res : print scores - "training rmse", "validation rmse", "training score", "validation score" and/or "oob_score"
+    '''
+    res=[rmse(clf.predict(X_train), y_train), rmse(clf.predict(X_test), y_test), clf.score(X_train, y_train),clf.score(X_test, y_test)]
+    if hasattr(clf, 'oob_score_'): res.append(clf.oob_score_)
+    print("training rmse, validation rmse, training score, validation score and/or oob_score")
+    print(res)
 
 
 def reverse_dict(dic):
-	'''
-	return reverse dictionary
-	'''
-	rev = dict([(value, key) for (key,value) in dic.items()])
-	return rev
+    '''
+    return reverse dictionary
+    '''
+    rev = dict([(value, key) for (key,value) in dic.items()])
+    return rev
 
 
 def plot_keras_acc_ax(history):
@@ -387,9 +422,11 @@ def moving_average_exp(a, n=3):
 
 
 def get_one_hot(targets, nb_classes):
-    """To generate one hot encoder
+    """
+    To generate one hot encoder
     targets - List of nos for which you want to generate one hot
-    nb_classes - Total no of classes"""
+    nb_classes - Total no of classes
+    """
     return np.eye(nb_classes)[np.array(targets).reshape(-1)]
 
 
