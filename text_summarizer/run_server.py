@@ -2,19 +2,20 @@ import sys
 sys.path.append('/home/atul/Git/DeepLearning/text_summarizer/backEnd')
 import config
 from  Summarizer import *
+#rom Summarizer_withLogging import *
 from spacy.lang.en import STOP_WORDS
 import en_core_web_md
 from gensim.models import Word2Vec as wv
 import json
 import time
-import pathlib
 
 
 from flask import Flask, abort, request, jsonify, Response
 from flask_cors import CORS, cross_origin
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 CORS(app)
+
 
 @app.route("/textSum", methods=['POST','GET'])
 def extSummary():
@@ -67,7 +68,7 @@ def extSummary():
 
     print("Step 3: Word Embedding loading")
     # Loading the Word Embeddings
-    model = wv.load('/home/atul/Git/wiki_model_new/wiki.en.text.model')
+    model = wv.load(config.WORD_EMBEDDINGS)
 
     print("Step 4: Extracting Summary")
     summ = Summarizer(model, nlp)

@@ -1,5 +1,6 @@
 import numpy as np
 import re
+import config
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
@@ -153,7 +154,7 @@ class Summarizer(object):
         sents_score=[]
 
         for sent in parsed.sents:
-            if bool(re.search("[0-9]+[ ]+[0-9]", sent.text)) == True or len(sent) < 7:
+            if bool(re.search("[0-9]+[ ]+[0-9]", sent.text)) == True or len(sent) < config.NUM_OF_SENTENCES:
                 sent_score = 0
             else:
                 sent_score=0
